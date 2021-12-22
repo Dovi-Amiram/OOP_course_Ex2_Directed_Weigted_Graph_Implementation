@@ -44,7 +44,7 @@ class DiGraph(GraphInterface):
     def remove_node(self, node_id: int) -> bool:
         if node_id in self.nodes.keys():
             self.nodes.pop(node_id)
-            for key in self.edges.keys():
+            for key in self.edges:
                 if node_id in key:
                     self.remove_edge(key[0], key[1])
             return True
