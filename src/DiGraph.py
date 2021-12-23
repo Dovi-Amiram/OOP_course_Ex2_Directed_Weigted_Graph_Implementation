@@ -1,5 +1,4 @@
-from GraphInterface import GraphInterface
-from Node import Node
+from src import GraphInterface, Node
 
 
 class DiGraph(GraphInterface):
@@ -10,7 +9,7 @@ class DiGraph(GraphInterface):
         self.edges_from_node = {}
         self.edges_to_node = {}
         self.mc = 0
-        self.node_size: int = 0
+        self.node_size = 0
         self.edge_size = 0
 
     def v_size(self) -> int:
@@ -19,21 +18,12 @@ class DiGraph(GraphInterface):
     def e_size(self) -> int:
         return self.edge_size
 
-    def get_all_v(self) -> dict:
-        return self.nodes
-
-    def all_in_edges_of_node(self, id1: int) -> dict:
-        return self.edges_to_node[id1]
-
-    def all_out_edges_of_node(self, id1: int) -> dict:
-        return self.edges_from_node[id1]
-
     def get_mc(self) -> int:
         return self.mc
 
     def add_edge(self, id1: int, id2: int, weight: float) -> bool:
-        if id1 in self.nodes.keys() and id in self.nodes.keys() and (id1, id2) not in self.edges.keys():
-            self.edges[(id1, id2)] = weight
+        if id1 in self.nodes.keys() and id2 in self.nodes.keys() and (id1, id2) not in self.edges.keys():
+            self.edges[(id2, id2)] = weight
             self.edges_from_node.get(id1)[id2] = weight
             self.edges_to_node.get(id2)[id1] = weight
             self.edge_size += 1
@@ -66,7 +56,26 @@ class DiGraph(GraphInterface):
             self.edges.pop(key)
             self.edges_from_node[node_id1].pop(node_id2)
             self.edges_to_node[node_id2].pop(node_id1)
-            self.mc += 1
             self.edge_size -= 1
+            self.mc += 1
             return True
         return False
+
+    def get_all_v(self) -> dict:
+        """return a dictionary of all the nodes in the Graph, each node is represented using a pair
+         (node_id, node_data)
+        """
+        return self.nodes
+
+    def all_in_edges_of_node(self, id1: int) -> dict:
+        """return a dictionary of all the nodes connected to (into) node_id ,
+        each node is represented using a pair (other_node_id, weight)
+         """
+        return self.edges_to_node[id1]
+
+    def all_out_edges_of_node(self, id1: int) -> dict:
+        """return a dictionary of all the nodes connected from node_id , each node is represented using a pair
+        (other_node_id, weight)
+        """
+        return self.edges_from_node[id1]
+
