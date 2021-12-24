@@ -7,8 +7,6 @@ class DiGraph(GraphInterface):
     def __init__(self):
         self.nodes = {}
         self.edges = {}
-        # self.edges_from_node = {}
-        # self.edges_to_node = {}
         self.mc = 0
         self.node_size = 0
         self.edge_size = 0
