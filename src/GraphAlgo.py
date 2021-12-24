@@ -28,14 +28,19 @@ class GraphAlgo(GraphAlgoInterface):
         """
         try:
             with open(file_name) as file:
-                json_graph = json.load(file)
+                json_graph = json.load(
+                    file)  # loaded file to dict: {"Edges": [{}, {}, {}...], "Nodes": [{}, {}, {}...]}
             node_list = json_graph["Nodes"]
             edge_list = json_graph["Edges"]
+            # iterate over node_list to save nodes to graph
             for node in node_list:
                 pos_string_list = node["pos"].split(",")
+                # make stings of numbers into actual float variables:
                 pos_tuple = float(pos_string_list[0]), float(pos_string_list[1]), float(pos_string_list[2])
                 self.g.add_node(node["id"], pos_tuple)
+            # iterate over node_list to save nodes to graph
             for edge in edge_list:
+                # iterate over node_list to save nodes to graph
                 self.g.add_edge(edge["src"], edge["dest"], edge["w"])
             return True
         except OSError:
@@ -94,14 +99,15 @@ class GraphAlgo(GraphAlgoInterface):
         if id1 == id2:
             return 0, result.append(id1)
         while len(unchecked_nodes) > 0:
-            min_weight_node_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
-            current_node = unchecked_nodes.pop(min_weight_node_key)
-            for neighbour in self.g.edges_from_node.get(min_weight_node_key):
-                next_node = self.g.nodes.get(neighbour)
-                current_edge_weight = self.g.edges_from_node.get(min_weight_node_key)[neighbour]
+            current_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
+            current_node = unchecked_nodes.pop(current_key)
+            for key in self.g.nodes[current_key].out_going_edges:
+                next_node = self.g.nodes[key]
+                current_edge_weight = next_node.in_going_edges[current_key]
                 if current_node.in_weight + current_edge_weight < next_node.in_weight:
                     next_node.in_weight = current_node.in_weight + current_edge_weight
                     next_node.prev_node_key = current_node.key
+
                     if next_node.key == id2:
                         result.clear()
                         result.append(id2)
@@ -111,7 +117,6 @@ class GraphAlgo(GraphAlgoInterface):
                         result.insert(0, id1)
         distance = self.g.nodes[id2].in_weight
         return distance, result
-
 
     def TSP(self, node_lst: List[int]) -> (List[int], float):
         """
