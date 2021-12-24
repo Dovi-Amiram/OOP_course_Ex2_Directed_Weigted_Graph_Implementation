@@ -1,4 +1,5 @@
-from src import GraphInterface, Node
+from GraphInterface import GraphInterface
+from Node import Node
 
 
 class DiGraph(GraphInterface):
@@ -12,6 +13,9 @@ class DiGraph(GraphInterface):
         self.node_size = 0
         self.edge_size = 0
 
+    def __str__(self):
+        return "Graph:  |V|={} , |E|={}".format(self.node_size, self.edge_size)
+
     def v_size(self) -> int:
         return self.node_size
 
@@ -23,7 +27,7 @@ class DiGraph(GraphInterface):
 
     def add_edge(self, id1: int, id2: int, weight: float) -> bool:
         if id1 in self.nodes.keys() and id2 in self.nodes.keys() and (id1, id2) not in self.edges.keys():
-            self.edges[(id2, id2)] = weight
+            self.edges[(id1, id2)] = weight
             self.edges_from_node.get(id1)[id2] = weight
             self.edges_to_node.get(id2)[id1] = weight
             self.edge_size += 1

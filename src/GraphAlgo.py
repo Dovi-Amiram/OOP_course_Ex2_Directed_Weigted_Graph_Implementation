@@ -1,8 +1,10 @@
 import json
 import math
+import copy
 from typing import List
-
-from src import GraphAlgoInterface, GraphInterface, DiGraph
+from GraphAlgoInterface import GraphAlgoInterface
+from  GraphInterface import GraphInterface
+from  DiGraph import DiGraph
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -84,7 +86,7 @@ class GraphAlgo(GraphAlgoInterface):
         More info:
         https://en.wikipedia.org/wiki/Dijkstra's_algorithm
         """
-        unchecked_nodes = self.g.nodes
+        unchecked_nodes = copy.copy(self.g.nodes)
         for item in unchecked_nodes:
             unchecked_nodes[item].in_weight = math.inf
         unchecked_nodes[id1].in_weight = 0
@@ -93,15 +95,13 @@ class GraphAlgo(GraphAlgoInterface):
             return 0, result.append(id1)
         while len(unchecked_nodes) > 0:
             min_weight_node_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
-            unchecked_nodes.pop(min_weight_node_key)
-            current_node = self.g.nodes[min_weight_node_key]
-            for dest in self.g.edges_from_node.get(min_weight_node_key):
-                next_node = self.g.nodes[dest]
-                current_edge_weight = self.g.edges_from_node(min_weight_node_key)[dest]
+            current_node = unchecked_nodes.pop(min_weight_node_key)
+            for neighbour in self.g.edges_from_node.get(min_weight_node_key):
+                next_node = self.g.nodes.get(neighbour)
+                current_edge_weight = self.g.edges_from_node.get(min_weight_node_key)[neighbour]
                 if current_node.in_weight + current_edge_weight < next_node.in_weight:
                     next_node.in_weight = current_node.in_weight + current_edge_weight
                     next_node.prev_node_key = current_node.key
-
                     if next_node.key == id2:
                         result.clear()
                         result.append(id2)
