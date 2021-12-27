@@ -3,8 +3,8 @@ import math
 import copy
 from typing import List
 from GraphAlgoInterface import GraphAlgoInterface
-from  GraphInterface import GraphInterface
-from  DiGraph import DiGraph
+from GraphInterface import GraphInterface
+from DiGraph import DiGraph
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -118,7 +118,68 @@ class GraphAlgo(GraphAlgoInterface):
         distance = self.g.nodes[id2].in_weight
         return distance, result
 
+    def max_shortest_path(self, source: int):
+        unchecked_nodes = copy.copy(self.g.nodes)
+        max_shortest_path = math.inf
+        for item in unchecked_nodes:
+            unchecked_nodes[item].in_weight = math.inf
+        unchecked_nodes[source].in_weight = 0
+        result = []
+        while len(unchecked_nodes) > 0:
+            current_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
+            current_node = unchecked_nodes.pop(current_key)
+            for key in self.g.nodes[current_key].out_going_edges:
+                next_node = self.g.nodes[key]
+                current_edge_weight = next_node.in_going_edges[current_key]
+                if current_node.in_weight + current_edge_weight < next_node.in_weight:
+                    next_node.in_weight = current_node.in_weight + current_edge_weight
+                    next_node.prev_node_key = current_node.key
+        for node in self.g.nodes:
+            max_shortest_path = max(max_shortest_path, self.g.nodes[node])
+        return max_shortest_path
+
+    def choose_start_node(self, node_lst: List[int]):
+        min_dist = math.inf
+        ans = ()
+        for node in node_lst:
+            self.max_shortest_path(self.g.nodes[node])
+            for other_node in node_lst:
+                if node == other_node: continue
+                current_in_weight = self.g.nodes[other_node]
+                if current_in_weight < min_dist:
+                    min_dist = current_in_weight
+                    ans = (self.g.nodes[node], self.g.nodes[other_node])
+        return ans
+
+    def closet_node(self, unchecked_node: List[int], source: int):
+        self.max_shortest_path(source)
+        result = source
+        min_weight = math.inf
+        for node in unchecked_node:
+            if self.g.nodes[node].in_weight < min_weight:
+                result = self.g.nodes[node]
+                min_weight = self.g.nodes[node].in_weight
+        return result
+
     def TSP(self, node_lst: List[int]) -> (List[int], float):
+        unchecked_node = node_lst
+        src, dest = self.choose_start_node(unchecked_node)
+        result: List = self.shortest_path(src, dest)[1]
+        distance = 0
+        for node in result:
+            unchecked_node.pop(node)
+        while len(unchecked_node) > 0:
+            current_key = self.closet_node(unchecked_node, dest)
+            path: List = self.shortest_path(dest, current_key)[1]
+            path.pop(0)
+            result.append(path)
+            current_node = self.g.nodes.get[current_key]
+            distance += current_node.in_weight
+            dest = current_key
+            for node in result:
+                unchecked_node.pop(node)
+        return result, distance
+
         """
         Finds the shortest path that visits all the nodes in the list
         :param node_lst: A list of nodes id's
@@ -126,6 +187,7 @@ class GraphAlgo(GraphAlgoInterface):
         """
 
     def centerPoint(self) -> (int, float):
+
         """
         Finds the node that has the shortest distance to it's farthest node.
         :return: The nodes id, min-maximum distance
