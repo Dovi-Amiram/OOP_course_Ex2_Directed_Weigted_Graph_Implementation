@@ -247,7 +247,7 @@ class GraphAlgo(GraphAlgoInterface):
             for key in self.g.nodes:
                 nodes_max_dist.append((key, self.max_shortest_path(key)))
             return min(nodes_max_dist, key=lambda pair: pair[1])
-        return -1
+        return -1, math.inf
 
     def plot_graph(self) -> None:
         """
