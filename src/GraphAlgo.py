@@ -6,6 +6,7 @@ from GraphAlgoInterface import GraphAlgoInterface
 from GraphInterface import GraphInterface
 from DiGraph import DiGraph
 from collections import deque
+import random
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -138,9 +139,9 @@ class GraphAlgo(GraphAlgoInterface):
             max_shortest_path = max(max_shortest_path, self.g.nodes[node].in_weight)
         return max_shortest_path
 
-    def zero_all_tags(self):
+    def zero_all_tags(self, graph: DiGraph):
         for key in self.g.nodes:
-            self.g.nodes[key].tag = 0
+            graph.nodes[key].tag = 0
 
     def has_path_to_nodes(self, node_list: List[int], source):
         """
@@ -182,15 +183,17 @@ class GraphAlgo(GraphAlgoInterface):
         transpose = copy.deepcopy(self.g)
         transpose.edges = {}
         for edge in self.g.edges:
-            transpose.edges[reversed(edge)] = self.g.edges[edge]
-        for node in transpose.nodes:
-            temp = node.in_going_edges
-            node.in_going_edges = node.out_going_edges
-            node.out_going_edges = temp
+            reversed_edge = edge[1], edge[0]
+            transpose.edges[reversed_edge] = self.g.edges[edge]
+        for key in transpose.nodes:
+            current_node = transpose.nodes[key]
+            temp = current_node.in_going_edges
+            current_node.in_going_edges = current_node.out_going_edges
+            current_node.out_going_edges = temp
         return transpose
 
     def dfs(self, graph: DiGraph, start_node: int):
-        self.zero_all_tags()
+        self.zero_all_tags(graph)
         not_visited = deque()
         not_visited.append(start_node)
         while len(not_visited) > 0:
@@ -201,7 +204,7 @@ class GraphAlgo(GraphAlgoInterface):
                     not_visited.append(neighbour)
 
     def is_connected(self):
-        start_node = self.g.nodes.popitem()[0]
+        start_node = random.choice(list(self.g.nodes.keys()))
         self.dfs(self.g, start_node)
         connected = True
         for key in self.g.nodes:
