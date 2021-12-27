@@ -19,9 +19,10 @@ def check():
     (7, 6.806805834715163)
     ([1,3,4,2],3.5)
     """
-    check0()
-    check1()
-    check2()
+    # check0()
+    # check1()
+    # check2()
+    check3()
 
 
 def check0():
@@ -45,6 +46,7 @@ def check0():
     print(g.all_out_edges_of_node(1))
     g_algo = GraphAlgo(g)
     print(g_algo.shortest_path(0, 3))
+    print(g_algo.TSP([0, 3]))
     g_algo.plot_graph()
 
 
@@ -102,7 +104,7 @@ def check3():
     g_algo = GraphAlgo(g)
     print(g_algo.centerPoint())
     print(g_algo.TSP([1, 2, 4]))
-    g_algo.plot_graph()
+    # g_algo.plot_graph()
 
 
 if __name__ == '__main__':
