@@ -43,8 +43,8 @@ class GraphAlgo(GraphAlgoInterface):
                     # make stings of numbers into actual float variables:
                     pos_tuple = float(pos_string_list[0]), float(pos_string_list[1]), float(pos_string_list[2])
                 else:
-                    off_set = 2
-                    extra = random.random() * 3
+                    off_set = 0.5
+                    extra = random.random() * 2
                     x = self.max_x + off_set + extra
                     y = random.random() * 100
                     pos_tuple = (x, y, 0)
