@@ -102,8 +102,9 @@ class GraphAlgo(GraphAlgoInterface):
             return 0, result.append(id1)
         while len(unchecked_nodes) > 0:
             current_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
-            current_node = unchecked_nodes.pop(current_key)
+            unchecked_nodes.pop(current_key)
             for key in self.g.nodes[current_key].out_going_edges:
+                current_node = self.g.nodes[current_key]
                 next_node = self.g.nodes[key]
                 current_edge_weight = next_node.in_going_edges[current_key]
                 if current_node.in_weight + current_edge_weight < next_node.in_weight:
@@ -115,7 +116,7 @@ class GraphAlgo(GraphAlgoInterface):
                         result.append(id2)
                         while current_node.key != id1:
                             result.insert(0, current_node.key)
-                            current_node = self.g.nodes[current_node.prev_node_key]
+                            current_node = copy.copy(self.g.nodes[current_node.prev_node_key])
                         result.insert(0, id1)
         distance = self.g.nodes[id2].in_weight
         return distance, result
