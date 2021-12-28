@@ -221,11 +221,11 @@ class GraphAlgo(GraphAlgoInterface):
         :param node_lst: A list of nodes id's
         :return: A list of the nodes id's in the path, and the overall distance
         """
-        if len(node_lst == 1): # just one node
+        if len(node_lst) == 1: # just one node
             return node_lst, 0
 
         potential_starting_points = [key for key in node_lst if self.has_path_to_nodes(node_lst, key)]
-        if len(potential_starting_points == 0 or len(node_lst) == 0): # no path exists
+        if len(potential_starting_points) == 0 or len(node_lst) == 0: # no path exists
             return [], math.inf
 
         if len(node_lst) == 2:
