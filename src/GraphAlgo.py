@@ -38,7 +38,6 @@ class GraphAlgo(GraphAlgoInterface):
             # iterate over node_list to save nodes to graph
             graph = DiGraph()
             for node in node_list:
-                pos_tuple = ()
                 if "pos" in node:
                     pos_string_list = node["pos"].split(",")
                     # make stings of numbers into actual float variables:
