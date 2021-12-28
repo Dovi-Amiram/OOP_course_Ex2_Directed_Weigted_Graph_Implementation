@@ -99,6 +99,10 @@ class DiGraph(GraphInterface):
             self.edges.pop(key)
             self.edge_size -= 1
             self.mc += 1
+            source = self.nodes[node_id1]
+            dest = self.nodes[node_id2]
+            source.out_going_edges.pop(node_id2)
+            dest.in_going_edges.pop(node_id1)
             return True
         return False
 
