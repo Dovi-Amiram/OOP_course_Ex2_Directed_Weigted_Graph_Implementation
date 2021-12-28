@@ -35,15 +35,17 @@ class GraphAlgo(GraphAlgoInterface):
             node_list = json_graph["Nodes"]
             edge_list = json_graph["Edges"]
             # iterate over node_list to save nodes to graph
+            graph = DiGraph()
             for node in node_list:
                 pos_string_list = node["pos"].split(",")
                 # make stings of numbers into actual float variables:
                 pos_tuple = float(pos_string_list[0]), float(pos_string_list[1]), float(pos_string_list[2])
-                self.g.add_node(node["id"], pos_tuple)
+                graph.add_node(node["id"], pos_tuple)
             # iterate over node_list to save nodes to graph
             for edge in edge_list:
                 # iterate over node_list to save nodes to graph
-                self.g.add_edge(edge["src"], edge["dest"], edge["w"])
+                graph.add_edge(edge["src"], edge["dest"], edge["w"])
+            self.g = graph
             return True
         except OSError:
             return False
