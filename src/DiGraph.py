@@ -77,12 +77,12 @@ class DiGraph(GraphInterface):
         Note: if the node id does not exists the function will do nothing
         """
         if node_id in self.nodes.keys():
+            for key in list(self.edges):
+                if node_id in key:
+                    self.remove_edge(key[0], key[1])
             self.nodes.pop(node_id)
             self.node_size -= 1
             self.mc += 1
-            for key in self.edges:
-                if node_id in key:
-                    self.remove_edge(key[0], key[1])
             return True
         return False
 
@@ -95,7 +95,7 @@ class DiGraph(GraphInterface):
         Note: If such an edge does not exists the function will do nothing
         """
         key = (node_id1, node_id2)
-        if key in self.edges.keys():
+        if key in self.edges:
             self.edges.pop(key)
             self.edge_size -= 1
             self.mc += 1
