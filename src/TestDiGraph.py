@@ -41,6 +41,9 @@ class TestDiGraph(TestCase):
             graph.remove_node(i)
         self.assertEqual(5, graph.node_size)
         self.assertEqual(15, graph.get_mc())
+        graph.add_edge(6, 7, 1)
+        graph.remove_node(6)
+        self.assertEqual(4, graph.node_size)
 
     def test_remove_edge(self):
         graph = DiGraph()
