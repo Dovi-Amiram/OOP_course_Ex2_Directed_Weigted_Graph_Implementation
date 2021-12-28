@@ -14,7 +14,6 @@ class GraphAlgo(GraphAlgoInterface):
     def __init__(self, graph: DiGraph = DiGraph()):
         self.g = graph
         self.max_x = 1
-        self.max_y = 1
 
     """This abstract class represents an interface of a graph."""
 
