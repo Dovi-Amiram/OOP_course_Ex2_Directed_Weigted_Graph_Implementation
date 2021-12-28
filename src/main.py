@@ -110,4 +110,16 @@ def check3():
 
 
 if __name__ == '__main__':
-    check()
+    #check()
+    g = DiGraph()
+    g.add_node(1)
+    g.add_node(2)
+    g.add_node(3)
+    g.add_node(4)
+    g.add_edge(2, 1, 1)
+    g.add_edge(2, 3, 0.3)
+    g.add_edge(3, 1, 0.3)
+    g.add_edge(3, 4, 0.1)
+    g.add_edge(4, 1, 0.1)
+    a_g = GraphAlgo(g)
+    print(a_g.shortest_path(2, 1))

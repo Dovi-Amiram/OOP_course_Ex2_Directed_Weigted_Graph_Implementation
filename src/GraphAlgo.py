@@ -117,16 +117,17 @@ class GraphAlgo(GraphAlgoInterface):
                     next_node.prev_node_key = current_node.key # set previous node attribute inorder to reverse
                     # engineer the path list
 
-                    if next_node.key == id2: # we have reached our destination node
+                    if key == id2: # we have reached our destination node
                         result.clear() # clear result because we may have found a shorter path to the destination
                         # so we'd like to reconstruct the list
 
                         # reconstructing list:
                         result.append(id2)
-                        while current_node.key != id1:
-                            result.insert(0, current_node.key) # insert all prev nodes to the head of the list (left
+                        node = current_node
+                        while node.key != id1:
+                            result.insert(0, node.key) # insert all prev nodes to the head of the list (left
                             # hand side)
-                            current_node = self.g.nodes[current_node.prev_node_key] # iterate
+                            node = self.g.nodes[node.prev_node_key] # iterate
                         result.insert(0, id1) # add source node
         distance = self.g.nodes[id2].in_weight
         return distance, result
