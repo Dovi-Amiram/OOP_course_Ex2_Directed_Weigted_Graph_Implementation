@@ -117,3 +117,7 @@ class DiGraph(GraphInterface):
         (other_node_id, weight)
         """
         return self.nodes[id1].out_going_edges
+
+    def reset_all_visited(self):
+        for key in self.nodes:
+            self.nodes[key].visited = False
