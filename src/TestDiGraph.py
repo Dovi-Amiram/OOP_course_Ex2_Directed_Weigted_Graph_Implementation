@@ -1,3 +1,4 @@
+import copy
 from unittest import TestCase
 
 from src.DiGraph import DiGraph
@@ -105,7 +106,10 @@ class TestDiGraph(TestCase):
         graph.add_node(2)
         graph.add_edge(1, 2, 4)
         all_nodes = graph.get_all_v()
-        self.assertEqual({1: graph.nodes[1], 2: graph.nodes[2]}, all_nodes)
+        nodes = {}
+        nodes[2] = graph.nodes[2]
+        nodes[1] = graph.nodes[1]
+        self.assertEqual(nodes, all_nodes)
 
     def test_all_in_edges_of_node(self):
         graph = DiGraph()
