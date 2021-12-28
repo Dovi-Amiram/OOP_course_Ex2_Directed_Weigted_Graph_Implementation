@@ -1,10 +1,21 @@
-import unittest
+from unittest import TestCase
 
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
+class TestGraphAlgo(TestCase):
+    def test_get_graph(self):
+        self.fail()
 
+    def test_load_from_json(self):
+        self.fail()
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_save_to_json(self):
+        self.fail()
+
+    def test_shortest_path(self):
+        self.fail()
+
+    def test_tsp(self):
+        self.fail()
+
+    def test_center_point(self):
+        self.fail()
