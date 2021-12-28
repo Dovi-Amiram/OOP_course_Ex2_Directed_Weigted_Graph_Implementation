@@ -37,10 +37,13 @@ class GraphAlgo(GraphAlgoInterface):
             # iterate over node_list to save nodes to graph
             graph = DiGraph()
             for node in node_list:
-                pos_string_list = node["pos"].split(",")
-                # make stings of numbers into actual float variables:
-                pos_tuple = float(pos_string_list[0]), float(pos_string_list[1]), float(pos_string_list[2])
+                pos_tuple = ()
+                if "pos" in node:
+                    pos_string_list = node["pos"].split(",")
+                    # make stings of numbers into actual float variables:
+                    pos_tuple = float(pos_string_list[0]), float(pos_string_list[1]), float(pos_string_list[2])
                 graph.add_node(node["id"], pos_tuple)
+
             # iterate over node_list to save nodes to graph
             for edge in edge_list:
                 # iterate over node_list to save nodes to graph
@@ -61,10 +64,13 @@ class GraphAlgo(GraphAlgoInterface):
             node_list = []
             edge_list = []
             for node in self.g.nodes.values():
-                pos_tuple = node.position
-                #  create dict with node parameters
-                # position is converted to string format
-                node_dict = {"pos": f"{pos_tuple[0]},{pos_tuple[1]},{pos_tuple[2]}", "id": node.key}
+                node_dict = {}
+                if node.position is not None:
+                    pos_tuple = node.position
+                    #  create dict with node parameters
+                    # position is converted to string format
+                    node_dict["pos"] = f"{pos_tuple[0]},{pos_tuple[1]},{pos_tuple[2]}"
+                node_dict["id"] = node.key
                 node_list.append(node_dict) # add to node list
             for key, weight in self.g.edges.items():
                 #  create dict with edge parameters according to format
