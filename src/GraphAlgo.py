@@ -221,27 +221,33 @@ class GraphAlgo(GraphAlgoInterface):
         :param node_lst: A list of nodes id's
         :return: A list of the nodes id's in the path, and the overall distance
         """
+        if len(node_lst == 1):
+            return node_lst, 0
+
+        potential_starting_points = [key for key in node_lst if self.has_path_to_nodes(node_lst, key)]
+        if len(potential_starting_points == 0):
+            return [], math.inf
+
         if len(node_lst) == 2:
             option_one = self.shortest_path(node_lst[0], node_lst[1]) # returns tuple: (float, list)
             option_two = self.shortest_path(node_lst[1], node_lst[0]) # returns tuple: (float, list)
             result_reversed = min(option_one, option_two, key=lambda pair: pair[0])
             # we need to return a tuple: (list, float) which is reversed from what is returned from SP func.
             return result_reversed[1], result_reversed[0]
-        else:
-            potential_starting_points = [key for key in node_lst if self.has_path_to_nodes(node_lst, key)]
-            potential_results = []
-            for source in potential_starting_points:
-                node_lst_copy = node_lst[0:]
-                node_lst_copy.remove(source)
-                tail = self.TSP(node_lst_copy) # (list, float)
-                tail_list = tail[0]
-                tail_list_lead = tail_list[0]
-                head = self.shortest_path(source, tail_list_lead)  # returns (float, list)
-                result_list = head[1] + tail_list[1:] # concatenate without tail_list head because of duplicates
-                result_dist = tail[1] + head[0]
-                final_result = result_list, result_dist
-                potential_results.append(final_result)
-            return min(potential_results, key=lambda pair: pair[1])
+
+        potential_results = []
+        for source in potential_starting_points:
+            node_lst_copy = node_lst[0:]
+            node_lst_copy.remove(source)
+            tail = self.TSP(node_lst_copy) # (list, float)
+            tail_list = tail[0]
+            tail_list_lead = tail_list[0]
+            head = self.shortest_path(source, tail_list_lead)  # returns (float, list)
+            result_list = head[1] + tail_list[1:] # concatenate without tail_list head because of duplicates
+            result_dist = tail[1] + head[0]
+            final_result = result_list, result_dist
+            potential_results.append(final_result)
+        return min(potential_results, key=lambda pair: pair[1])
 
     def centerPoint(self) -> (int, float):
         """
