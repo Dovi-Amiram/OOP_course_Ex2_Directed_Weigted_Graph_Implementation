@@ -108,8 +108,9 @@ class GraphAlgo(GraphAlgoInterface):
         while len(unchecked_nodes) > 0:
             # save the node with the minimum in-weight. this will change in the course of the loop
             current_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
-            current_node = unchecked_nodes.pop(current_key) # remove and save node object
+            unchecked_nodes.pop(current_key) # remove and save node object
             for key in self.g.nodes[current_key].out_going_edges: # iterate over current node's neighbours
+                current_node = self.g.nodes[current_key]
                 next_node = self.g.nodes[key]
                 current_edge_weight = next_node.in_going_edges[current_key]
                 if current_node.in_weight + current_edge_weight < next_node.in_weight: # we have found a shorter path
