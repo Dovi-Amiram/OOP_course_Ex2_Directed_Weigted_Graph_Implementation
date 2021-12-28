@@ -13,6 +13,8 @@ class GraphAlgo(GraphAlgoInterface):
 
     def __init__(self, graph: DiGraph = DiGraph()):
         self.g = graph
+        self.max_x = 1
+        self.max_y = 1
 
     """This abstract class represents an interface of a graph."""
 
@@ -42,6 +44,12 @@ class GraphAlgo(GraphAlgoInterface):
                     pos_string_list = node["pos"].split(",")
                     # make stings of numbers into actual float variables:
                     pos_tuple = float(pos_string_list[0]), float(pos_string_list[1]), float(pos_string_list[2])
+                else:
+                    off_set = 2
+                    extra = random.random() * 3
+                    x = self.max_x + off_set + extra
+                    y = random.random() * 100
+                    pos_tuple = (x, y, 0)
                 graph.add_node(node["id"], pos_tuple)
 
             # iterate over node_list to save nodes to graph
