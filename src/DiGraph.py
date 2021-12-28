@@ -78,6 +78,8 @@ class DiGraph(GraphInterface):
         """
         if node_id in self.nodes.keys():
             self.nodes.pop(node_id)
+            self.node_size -= 1
+            self.mc += 1
             for key in self.edges:
                 if node_id in key:
                     self.remove_edge(key[0], key[1])
