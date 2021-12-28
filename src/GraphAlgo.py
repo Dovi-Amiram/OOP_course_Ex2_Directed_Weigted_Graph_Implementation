@@ -139,10 +139,6 @@ class GraphAlgo(GraphAlgoInterface):
             max_shortest_path = max(max_shortest_path, self.g.nodes[node].in_weight)
         return max_shortest_path
 
-    def zero_all_tags(self, graph: DiGraph):
-        for key in self.g.nodes:
-            graph.nodes[key].tag = 0
-
     def has_path_to_nodes(self, node_list: List[int], source):
         """
         return true if and only if there exists a path from the source to all other nodes in the list
@@ -151,7 +147,7 @@ class GraphAlgo(GraphAlgoInterface):
         self.dfs(self.g, source)
         has_path = True
         for node_key in node_list:
-            has_path = has_path and (self.g.nodes[node_key].tag == 1)
+            has_path = has_path and self.g.nodes[node_key].visited
         return has_path
 
     def choose_start_nodes(self, node_lst: List[int]):
@@ -193,14 +189,14 @@ class GraphAlgo(GraphAlgoInterface):
         return transpose
 
     def dfs(self, graph: DiGraph, start_node: int):
-        self.zero_all_tags(graph)
+        graph.reset_all_visited()
         not_visited = deque()
         not_visited.append(start_node)
         while len(not_visited) > 0:
             current_node = graph.nodes[not_visited.pop()]
-            current_node.tag = 1
+            current_node.visited = True
             for neighbour in current_node.out_going_edges:
-                if graph.nodes[neighbour].tag != 1:
+                if not graph.nodes[neighbour].visited:
                     not_visited.append(neighbour)
 
     def is_connected(self):
@@ -208,11 +204,11 @@ class GraphAlgo(GraphAlgoInterface):
         self.dfs(self.g, start_node)
         connected = True
         for key in self.g.nodes:
-            connected = connected and (self.g.nodes[key].tag == 1)
+            connected = connected and self.g.nodes[key].visited
         transposed = self.transpose()
         self.dfs(transposed, start_node)
         for key in transposed.nodes:
-            connected = connected and (transposed.nodes[key].tag == 1)
+            connected = connected and transposed.nodes[key].visited
         return connected
 
     def TSP(self, node_lst: List[int]) -> (List[int], float):
