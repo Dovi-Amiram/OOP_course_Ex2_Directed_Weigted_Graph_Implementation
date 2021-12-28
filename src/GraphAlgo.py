@@ -55,18 +55,22 @@ class GraphAlgo(GraphAlgoInterface):
         @return: True if the save was successful, False o.w.
         """
         if self.g is not None:
+            # initialize lists
             node_list = []
             edge_list = []
             for node in self.g.nodes.values():
                 pos_tuple = node.position
+                #  create dict with node parameters
+                # position is converted to string format
                 node_dict = {"pos": f"{pos_tuple[0]},{pos_tuple[1]},{pos_tuple[2]}", "id": node.key}
-                node_list.append(node_dict)
+                node_list.append(node_dict) # add to node list
             for key, weight in self.g.edges.items():
+                #  create dict with edge parameters according to format
                 edge_dict = {"src": key[0], "w": weight, "dest": key[1]}
-                edge_list.append(edge_dict)
-            graph_dict = {"Edges": edge_list, "Nodes": node_list}
+                edge_list.append(edge_dict) # add to edge list
+            graph_dict = {"Edges": edge_list, "Nodes": node_list} # create final graph to be dumped
             with open(file_name, "w") as file:
-                json.dump(graph_dict, file, indent=4)
+                json.dump(graph_dict, file, indent=4) # save to json file
             return True
         return False
 
@@ -93,30 +97,37 @@ class GraphAlgo(GraphAlgoInterface):
         More info:
         https://en.wikipedia.org/wiki/Dijkstra's_algorithm
         """
-        unchecked_nodes = copy.copy(self.g.nodes)
+        unchecked_nodes = copy.copy(self.g.nodes) # initialize list of unchecked nodes
+        # zero the in-weight attribute of all the nodes
         for item in unchecked_nodes:
             unchecked_nodes[item].in_weight = math.inf
         unchecked_nodes[id1].in_weight = 0
-        result = []
-        if id1 == id2:
+        result = [] # initialize empty list (to be filled and returned)
+        if id1 == id2: # one node - no path
             return 0, result.append(id1)
         while len(unchecked_nodes) > 0:
+            # save the node with the minimum in-weight. this will change in the course of the loop
             current_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
-            current_node = unchecked_nodes.pop(current_key)
-            for key in self.g.nodes[current_key].out_going_edges:
+            current_node = unchecked_nodes.pop(current_key) # remove and save node object
+            for key in self.g.nodes[current_key].out_going_edges: # iterate over current node's neighbours
                 next_node = self.g.nodes[key]
                 current_edge_weight = next_node.in_going_edges[current_key]
-                if current_node.in_weight + current_edge_weight < next_node.in_weight:
+                if current_node.in_weight + current_edge_weight < next_node.in_weight: # we have found a shorter path
                     next_node.in_weight = current_node.in_weight + current_edge_weight
-                    next_node.prev_node_key = current_node.key
+                    next_node.prev_node_key = current_node.key # set previous node attribute inorder to reverse
+                    # engineer the path list
 
-                    if next_node.key == id2:
-                        result.clear()
+                    if next_node.key == id2: # we have reached our destination node
+                        result.clear() # clear result because we may have found a shorter path to the destination
+                        # so we'd like to reconstruct the list
+
+                        # reconstructing list:
                         result.append(id2)
                         while current_node.key != id1:
-                            result.insert(0, current_node.key)
-                            current_node = self.g.nodes[current_node.prev_node_key]
-                        result.insert(0, id1)
+                            result.insert(0, current_node.key) # insert all prev nodes to the head of the list (left
+                            # hand side)
+                            current_node = self.g.nodes[current_node.prev_node_key] # iterate
+                        result.insert(0, id1) # add source node
         distance = self.g.nodes[id2].in_weight
         return distance, result
 
