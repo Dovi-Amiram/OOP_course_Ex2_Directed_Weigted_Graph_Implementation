@@ -4,6 +4,8 @@ from GraphAlgo import GraphAlgo
 
 def check():
     """
+    check0() output:
+
     Graph: |V|=4 , |E|=5
     {0: 0: |edges out| 1 |edges in| 1, 1: 1: |edges out| 3 |edges in| 1, 2: 2: |edges out| 1 |edges in| 1, 3: 3: |edges out| 0 |edges in| 2}
     {0: 1}
@@ -19,10 +21,10 @@ def check():
     (7, 6.806805834715163)
     ([1,3,4,2],3.5)
     """
-    # check0()
-    # check1()
+    check0()
+    check1()
     # check2()
-    check3()
+    # check3()
 
 
 def check0():
@@ -56,7 +58,7 @@ def check1():
     :return:
     """
     g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
-    file = "../data/T0.json"
+    file = "../data/A0.json"
     g_algo.load_from_json(file)  # init a GraphAlgo from a json file
     print(g_algo.shortest_path(0, 3))
     print(g_algo.shortest_path(3, 1))

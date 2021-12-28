@@ -11,7 +11,7 @@ import random
 
 class GraphAlgo(GraphAlgoInterface):
 
-    def __init__(self, graph: DiGraph = None):
+    def __init__(self, graph: DiGraph = DiGraph()):
         self.g = graph
 
     """This abstract class represents an interface of a graph."""
@@ -268,4 +268,5 @@ class GraphAlgo(GraphAlgoInterface):
         Otherwise, they will be placed in a random but elegant manner.
         @return: None
         """
-        raise NotImplementedError
+        pass
+        # raise NotImplementedError
