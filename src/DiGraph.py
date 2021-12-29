@@ -1,5 +1,8 @@
-from GraphInterface import GraphInterface
-from Node import Node
+import math
+
+from src.GraphInterface import GraphInterface
+from src.Node import Node
+import random
 
 
 class DiGraph(GraphInterface):
@@ -10,6 +13,11 @@ class DiGraph(GraphInterface):
         self.mc = 0
         self.node_size = 0
         self.edge_size = 0
+        self.random_max_x = 50
+        self.min_x = math.inf
+        self.max_x = 0
+        self.min_y = math.inf
+        self.max_y = 0
 
     def __repr__(self):
         return f"Graph: |V| = {self.node_size} , |E| = {self.edge_size}"
@@ -54,6 +62,13 @@ class DiGraph(GraphInterface):
             return True
         return False
 
+    def update_min_max(self, key):
+        if self.nodes[key].position is not None:
+            self.max_x = max(self.max_x, self.nodes[key].position[0])
+            self.min_x = min(self.min_x, self.nodes[key].position[0])
+            self.max_y = max(self.max_y, self.nodes[key].position[1])
+            self.min_y = min(self.min_y, self.nodes[key].position[1])
+
     def add_node(self, node_id: int, pos: tuple = None) -> bool:
         """
         Adds a node to the graph.
@@ -64,6 +79,7 @@ class DiGraph(GraphInterface):
         """
         if node_id not in self.nodes.keys():
             self.nodes[node_id] = Node(node_id, pos)
+            self.update_min_max(node_id)
             self.node_size += 1
             self.mc += 1
             return True
@@ -127,3 +143,17 @@ class DiGraph(GraphInterface):
     def reset_all_visited(self):
         for key in self.nodes:
             self.nodes[key].visited = False
+
+    def ensure_position(self, node: int):
+        if self.nodes[node].position is None:
+            off_set = 50
+            extra = random.random() * 100
+            x = self.max_x + off_set + extra
+            self.max_x = x
+            y = random.random() * 500
+            pos_tuple = (x, y, 0)
+            self.nodes[node].position = pos_tuple
+            self.max_x = max(self.max_x, pos_tuple[0])
+            self.min_x = min(self.min_x, pos_tuple[0])
+            self.max_y = max(self.max_y, pos_tuple[1])
+            self.min_y = min(self.min_y, pos_tuple[1])
