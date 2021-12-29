@@ -1,10 +1,12 @@
 import json
 import math
 import copy
+import tkinter as tk
 from typing import List
-from GraphAlgoInterface import GraphAlgoInterface
-from GraphInterface import GraphInterface
-from DiGraph import DiGraph
+from src import *
+from src.GraphAlgoInterface import GraphAlgoInterface
+from src.GraphInterface import GraphInterface
+from src.DiGraph import DiGraph
 from collections import deque
 import random
 
@@ -13,7 +15,6 @@ class GraphAlgo(GraphAlgoInterface):
 
     def __init__(self, graph: DiGraph = DiGraph()):
         self.g = graph
-        self.max_x = 1
 
     """This abstract class represents an interface of a graph."""
 
@@ -38,17 +39,16 @@ class GraphAlgo(GraphAlgoInterface):
             # iterate over node_list to save nodes to graph
             graph = DiGraph()
             for node in node_list:
+                key = node["id"]
+                graph.add_node(key, None)
                 if "pos" in node:
                     pos_string_list = node["pos"].split(",")
                     # make stings of numbers into actual float variables:
                     pos_tuple = float(pos_string_list[0]), float(pos_string_list[1]), float(pos_string_list[2])
+                    graph.nodes[key].position = pos_tuple
                 else:
-                    off_set = 0.5
-                    extra = random.random() * 2
-                    x = self.max_x + off_set + extra
-                    y = random.random() * 100
-                    pos_tuple = (x, y, 0)
-                graph.add_node(node["id"], pos_tuple)
+                    graph.ensure_position(key)
+                graph.update_min_max(key)
 
             # iterate over node_list to save nodes to graph
             for edge in edge_list:
@@ -77,14 +77,14 @@ class GraphAlgo(GraphAlgoInterface):
                     # position is converted to string format
                     node_dict["pos"] = f"{pos_tuple[0]},{pos_tuple[1]},{pos_tuple[2]}"
                 node_dict["id"] = node.key
-                node_list.append(node_dict) # add to node list
+                node_list.append(node_dict)  # add to node list
             for key, weight in self.g.edges.items():
                 #  create dict with edge parameters according to format
                 edge_dict = {"src": key[0], "w": weight, "dest": key[1]}
-                edge_list.append(edge_dict) # add to edge list
-            graph_dict = {"Edges": edge_list, "Nodes": node_list} # create final graph to be dumped
+                edge_list.append(edge_dict)  # add to edge list
+            graph_dict = {"Edges": edge_list, "Nodes": node_list}  # create final graph to be dumped
             with open(file_name, "w") as file:
-                json.dump(graph_dict, file, indent=4) # save to json file
+                json.dump(graph_dict, file, indent=4)  # save to json file
             return True
         return False
 
@@ -111,39 +111,39 @@ class GraphAlgo(GraphAlgoInterface):
         More info:
         https://en.wikipedia.org/wiki/Dijkstra's_algorithm
         """
-        unchecked_nodes = copy.copy(self.g.nodes) # initialize list of unchecked nodes
+        unchecked_nodes = copy.copy(self.g.nodes)  # initialize list of unchecked nodes
         # zero the in-weight attribute of all the nodes
         for item in unchecked_nodes:
             unchecked_nodes[item].in_weight = math.inf
         unchecked_nodes[id1].in_weight = 0
-        result = [] # initialize empty list (to be filled and returned)
-        if id1 == id2: # one node - no path
+        result = []  # initialize empty list (to be filled and returned)
+        if id1 == id2:  # one node - no path
             return 0, result.append(id1)
         while len(unchecked_nodes) > 0:
             # save the node with the minimum in-weight. this will change in the course of the loop
             current_key = min(unchecked_nodes.items(), key=lambda node_tuple: node_tuple[1].in_weight)[1].key
-            unchecked_nodes.pop(current_key) # remove and save node object
-            for key in self.g.nodes[current_key].out_going_edges: # iterate over current node's neighbours
+            unchecked_nodes.pop(current_key)  # remove and save node object
+            for key in self.g.nodes[current_key].out_going_edges:  # iterate over current node's neighbours
                 current_node = self.g.nodes[current_key]
                 next_node = self.g.nodes[key]
                 current_edge_weight = next_node.in_going_edges[current_key]
-                if current_node.in_weight + current_edge_weight < next_node.in_weight: # we have found a shorter path
+                if current_node.in_weight + current_edge_weight < next_node.in_weight:  # we have found a shorter path
                     next_node.in_weight = current_node.in_weight + current_edge_weight
-                    next_node.prev_node_key = current_node.key # set previous node attribute inorder to reverse
+                    next_node.prev_node_key = current_node.key  # set previous node attribute inorder to reverse
                     # engineer the path list
 
-                    if key == id2: # we have reached our destination node
-                        result.clear() # clear result because we may have found a shorter path to the destination
+                    if key == id2:  # we have reached our destination node
+                        result.clear()  # clear result because we may have found a shorter path to the destination
                         # so we'd like to reconstruct the list
 
                         # reconstructing list:
                         result.append(id2)
                         node = current_node
                         while node.key != id1:
-                            result.insert(0, node.key) # insert all prev nodes to the head of the list (left
+                            result.insert(0, node.key)  # insert all prev nodes to the head of the list (left
                             # hand side)
-                            node = self.g.nodes[node.prev_node_key] # iterate
-                        result.insert(0, id1) # add source node
+                            node = self.g.nodes[node.prev_node_key]  # iterate
+                        result.insert(0, id1)  # add source node
         distance = self.g.nodes[id2].in_weight
         return distance, result
 
@@ -244,16 +244,16 @@ class GraphAlgo(GraphAlgoInterface):
         :param node_lst: A list of nodes id's
         :return: A list of the nodes id's in the path, and the overall distance
         """
-        if len(node_lst) == 1: # just one node
+        if len(node_lst) == 1:  # just one node
             return node_lst, 0
 
         potential_starting_points = [key for key in node_lst if self.has_path_to_nodes(node_lst, key)]
-        if len(potential_starting_points) == 0 or len(node_lst) == 0: # no path exists
+        if len(potential_starting_points) == 0 or len(node_lst) == 0:  # no path exists
             return [], math.inf
 
         if len(node_lst) == 2:
-            option_one = self.shortest_path(node_lst[0], node_lst[1]) # returns tuple: (float, list)
-            option_two = self.shortest_path(node_lst[1], node_lst[0]) # returns tuple: (float, list)
+            option_one = self.shortest_path(node_lst[0], node_lst[1])  # returns tuple: (float, list)
+            option_two = self.shortest_path(node_lst[1], node_lst[0])  # returns tuple: (float, list)
             result_reversed = min(option_one, option_two, key=lambda pair: pair[0])
             # we need to return a tuple: (list, float) which is reversed from what is returned from SP func.
             return result_reversed[1], result_reversed[0]
@@ -262,11 +262,11 @@ class GraphAlgo(GraphAlgoInterface):
         for source in potential_starting_points:
             node_lst_copy = node_lst[0:]
             node_lst_copy.remove(source)
-            tail = self.TSP(node_lst_copy) # (list, float)
+            tail = self.TSP(node_lst_copy)  # (list, float)
             tail_list = tail[0]
             tail_list_lead = tail_list[0]
             head = self.shortest_path(source, tail_list_lead)  # returns (float, list)
-            result_list = head[1] + tail_list[1:] # concatenate without tail_list head because of duplicates
+            result_list = head[1] + tail_list[1:]  # concatenate without tail_list head because of duplicates
             result_dist = tail[1] + head[0]
             final_result = result_list, result_dist
             potential_results.append(final_result)
@@ -284,6 +284,25 @@ class GraphAlgo(GraphAlgoInterface):
             return min(nodes_max_dist, key=lambda pair: pair[1])
         return -1, math.inf
 
+    def arrow_offsets(self, source, dest, r):
+        source_pos = self.g.nodes[source].position
+        dest_pos = self.g.nodes[dest].position
+        dy = dest_pos[1] - source_pos[1]
+        dx = dest_pos[0] - source_pos[0]
+        distance = math.sqrt(math.pow(dx, 2) + math.pow(dy, 2))
+        sin = dy / distance
+        cos = dx / distance
+        x_offset = r * cos
+        y_offset = r * sin
+        return x_offset, y_offset
+
+    def scale(self, width, height):
+        diff_x = self.g.max_x - self.g.min_x
+        diff_y = self.g.max_y - self.g.min_y
+        x_factor = (width - 100) / diff_x
+        y_factor = (height - 100) / diff_y
+        return x_factor, y_factor
+
     def plot_graph(self) -> None:
         """
         Plots the graph.
@@ -291,5 +310,40 @@ class GraphAlgo(GraphAlgoInterface):
         Otherwise, they will be placed in a random but elegant manner.
         @return: None
         """
-        pass
+        for key in self.g.nodes:
+            self.g.ensure_position(key)
+        root = tk.Tk()
+        width = 1080
+        height = 600
+        root.geometry(f"{width}x{height}")
+        root.title("Graph Representation")
+        my_canvas = tk.Canvas(root, width=width, height=height, bg="light grey")
+        my_canvas.pack()
+        r = 11
+        x_factor, y_factor = self.scale(width, height)
+        for node in self.g.nodes:
+            current_node = self.g.nodes[node]
+            pos = current_node.position
+            x, y, z = pos
+            x = (x - self.g.min_x) * x_factor + 50
+            y = (y - self.g.min_y) * y_factor + 50
+            my_canvas.create_oval(x - r, y + r, x + r, y - r, fill='lawn green')
+            my_canvas.create_text(x, y, text=f"{node}", fill='black', font=('ComicSans', '10', 'bold'))
+        for edge in self.g.edges:
+            source, dest = edge
+            source_node = self.g.nodes[source]
+            dest_node = self.g.nodes[dest]
+            x1, y1, z1 = source_node.position
+            x2, y2, z2 = dest_node.position
+            x1 = (x1 - self.g.min_x) * x_factor + 50
+            y1 = (y1 - self.g.min_y) * y_factor + 50
+            x2 = (x2 - self.g.min_x) * x_factor + 50
+            y2 = (y2 - self.g.min_y) * y_factor + 50
+            x_offset, y_offset = self.arrow_offsets(source, dest, r)
+            my_canvas.create_line(x1 + x_offset, y1 + y_offset, x2 - x_offset, y2 - y_offset, fill='dark slate grey',
+                                  width=2,
+                                  arrow=tk.LAST)
+
+        my_canvas.mainloop()
+
         # raise NotImplementedError
