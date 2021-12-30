@@ -3,7 +3,7 @@
 ### About:
 This project deals with the Abstraction, Design and Implementation of a Directed Weighted Graph.  
 This specific Implementation of a Directed Weighted Graph is revolved around the abstraction of road-maps and the way SAT-NAV's typically represent the world around us. each Node may refer to a city or a junction, and Edge may refer to a road between two places, and the Egde's weight may refer to the distance or time to be travelled via said road.  
-The same project has already been written in Java by my partner and I. This project however, is also meant for testing performance differences between the 2 different Implementations (Java VS Python): [Wiki](https://github.com/shlomoPearl/OOP-Ex3/wiki)
+The same project has already been written in Java by my partner and I. This project however, is also meant for testing performance differences between the 2 different Implementations (Java VS Python): [Wiki](https://github.com/shlomoPearl/OOP-Ex3/wiki/ "Comparing our Java program's performance to our Python program's performance")
 
 ## UML Diagram:
 
