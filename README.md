@@ -15,9 +15,8 @@ The same project has already been written in Java by my partner and I. This proj
   
 ### Data Structures:
 #### Each graph is defined by:
-1.	A collection of Nodes implemented by a dictionary, which maps the Node's Integer ID (key) to the corresponding Node object (value).
-
-Example of a key-value pair in said dictionary: 23: <Node Object>
+1.	A collection of Nodes implemented by a dictionary, which maps the Node's Integer ID (key) to the corresponding Node object (value).  
+An example of a key-value pair in said dictionary: 23: <Node Object>
 
 2.	A collection of directed edges implemented by a dictionary, which maps a tuple of an ordered pair (a, b) of two integer Node ID's, to the corresponding edge's weight.
 
