@@ -45,6 +45,10 @@ pair[1] = A list of the Nodes that form the path in the correct order.
 11. **Load** – Loads and creates a graph from a JSON file.
 12. **PlotGraph** – Plots a representation of the graph on a graphical window.  
   
+  #### Example:  
+  
+  ![WhatsApp Image 2021-12-30 at 01 01 23](https://user-images.githubusercontent.com/73857923/147785358-eb00a191-7aa5-4e18-925c-7e7e0a0d4975.jpeg)
+  
 ### Running the program from your command line:  
   
 We designed a way to load a graph from a Json file, and plot its representation in a graphical window, using this simple command:  
