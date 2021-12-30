@@ -5,7 +5,7 @@ This project which deals with the Abstraction, Design and Implementation of a Di
 This specific Implementation of a Directed Weighted Graph is revolved around the abstraction of road-maps and the way SAT-NAV's typically represent the world around us. each Node may refer to a city or a junction, and Edge may refer to a road between two places, and the Egde's weight may refer to the distance or time to be travelled via said road.
 The same project has already been written in Java by my partner and I. This project however, is also meant to test performance differences between the 2 different Implementations (Java VS Python).
 
-## UML Diagram: ##
+## UML Diagram:
 
 ![UML](https://user-images.githubusercontent.com/73857923/147769542-f42b5408-17b9-457c-bf92-5c0f3256f12d.png)
 
@@ -44,7 +44,7 @@ pair[1] = A list of the Nodes that form the path in the correct order.
 10. **Save** – Saves the graph in a JSON file in a "pretty-printing" JSON format.
 11. **Load** – Loads and creates a graph from a JSON file.
 12. **PlotGraph** – Plots a representation of the graph on a graphical window.   
-##### Running the program from command line:
+#### Running the program from command line:
 We designed a way to load a graph from a Json file, and plot its representation in a graphical window, using this simple command:  
 For plotting the graphs from our project's files:  
 **python Ex3.py data/\<json file name\>**  
